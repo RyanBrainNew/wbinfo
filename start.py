@@ -11,15 +11,22 @@ import logging
 import time
 import re
 
+#配置区
+keywords = {"婴", "儿童", "尿"}
+
 corpid = 'wwb83672685478bbbe'
-# AgentId = '1000002'
-# corpsecret = 'Frah3vmHcAaSbGWdPYJOgmVALwgNAzWYvx7KbqI7YkM'
-AgentId = '1000003'
-corpsecret = 'GVO52NYeeQdgrSpd2Wikje1QNyBRoZzZyexY9k5dFqQ'
+AgentId = '1000002'
+corpsecret = 'Frah3vmHcAaSbGWdPYJOgmVALwgNAzWYvx7KbqI7YkM'
+#AgentId = '1000003'
+#corpsecret = 'GVO52NYeeQdgrSpd2Wikje1QNyBRoZzZyexY9k5dFqQ'
+#AgentId = '1000004'
+#corpsecret = 'svupCDwX54V1NtuekwuOg58yW5khHyCnzrTLJy8Vpos'
+
+logfile_path = '/root/weibo/new.log'
+#logfile_path = 'new.log'
 
 logging.basicConfig(level=logging.INFO,#控制台打印的日志级别
-                    #filename='/root/WeiBo/new.log',
-                    filename='new.log',
+                    filename=logfile_path,
                     filemode='a',##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
                     #a是追加模式，默认如果不写的话，就是追加模式
                     format=
@@ -52,25 +59,26 @@ def qywx(msg):
     print(respon)
     print(res.text)
     if respon['errmsg'] == "ok":
-        print(f"推送成功\r")
+        print(f"推送成功\n")
     else:
-        print(f" 推送失败:鬼知道哪错了\r")
+        print(f" 推送失败:鬼知道哪错了\n")
     print("end")
 
+def keyword_compare(dicts):
+    #print(dicts['text'])
+    for i in keywords:
+        if(i in dicts['text']):
+            return 0
+    return 1
 
-#python去除html标签的几种方法
-#https://www.cnblogs.com/zhangyafei/p/10285378.html
 
 def wbweixin(dicts):
-    text = "宁关注的："+dicts['nickName']+"发布微博啦\r"
-    text += "发送时间: "+dicts['created_at'][0:20]+"\r"
-    #text += "发送时间: " + dicts['text'] + "\r"
-    #下面做简单的标签处理，在微信上可以正确显示格式
     context = dicts['text'].replace('<br />', '\r')
     pattern = re.compile(r'<[^>]+>', re.S)
     result = pattern.sub('', context)
-    text += "发送内容: " + result
-    #text += "发送内容: " + dicts['text']
+    text = "发送内容: "  + result + "\r"
+    text += "发送时间: " + dicts['created_at'][0:20]+"\r"
+    text += "宁关注的：" + dicts['nickName']+"发布微博啦\r"
     flag = qywx(text)
     return flag
 
@@ -85,7 +93,11 @@ def main():
             w.getWBQueue()
     newWB = w.startmonitor()
     if newWB is not None:
-        print(wbweixin(newWB))#推送成功则输出True
+        flag = keyword_compare(newWB)
+        if(flag == 1):
+            print(wbweixin(newWB))  # 推送成功则输出True
+        else:
+            print("没有关键词")
     else:
         #print("没有更新内容")
         logging.info('没有更新')
@@ -94,4 +106,4 @@ def main():
 if __name__ == '__main__':
     while(1):
         main()
-        time.sleep(5)
+        time.sleep(30)
