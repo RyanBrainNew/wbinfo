@@ -30,10 +30,15 @@ python3 start.py
 
 注意事项，执行定时任务请把各py文件内的文件路径替换为绝对路径
 
-vim /etc/crontab
+```
+crontab -e
+*/1 * * * * /root/monitor/monitor.sh
+```
 
-  *  *  *  *  *  root python3 /root/WeiBo/start.py
+记得看日志验证结果
 
-写完crontab以后记得重启并看日志验证结果
-service crond restart
+```
 tail /var/log/cron
+或者
+tail /root/cron.log
+```
