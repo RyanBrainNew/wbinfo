@@ -6,8 +6,8 @@
 
 import requests,json,sys
 global COMPARE_FILE
-COMPARE_FILE = "/root/weibo/wbIds.txt"
-#COMPARE_FILE = "wbIds.txt"
+#COMPARE_FILE = "/root/weibo/wbIds.txt"
+COMPARE_FILE = "wbIds.txt"
 
 class weiboMonitor():
 	def __init__(self, ):
