@@ -37,7 +37,7 @@ class weiboMonitor():
 						self.weiboInfo.append('https://m.weibo.cn/api/container/getIndex?type=uid&value=%s&containerid=%s'%(i,j['containerid']))
 		except Exception as e:
 			self.echoMsg('Error',e)
-			# sys.exit()		为了代码不异常退出，这里注释掉
+			sys.exit()
 	#收集已经发布动态的id
 	def getWBQueue(self):
 		try:
@@ -54,7 +54,7 @@ class weiboMonitor():
 			self.echoMsg('Info','目前有 %s 条微博'%len(self.itemIds))
 		except Exception as e:
 			self.echoMsg('Error',e)
-			# sys.exit()		为了代码不异常退出，这里注释掉
+			sys.exit()
 	#开始监控
 	def startmonitor(self, ):
 		returnDict = {} #获取微博相关内容，编辑为邮件
@@ -80,7 +80,7 @@ class weiboMonitor():
 							return returnDict
 		except Exception as e:
 			self.echoMsg('Error',e)
-			# sys.exit()		为了代码不异常退出，这里注释掉
+			sys.exit()
 	#格式化输出
 	def echoMsg(self, level, msg):
 		if level == 'Info':
