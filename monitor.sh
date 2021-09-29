@@ -1,7 +1,7 @@
 #! /bin/sh
 
 host_dir=`echo ~`                                       # 当前用户根目录
-proc_name="start.py"                                    # 进程名
+proc_name="weibo.py"                                    # 进程名
 file_name="/cron.log"                                   # 日志文件
 exec_path="/root/weibo"                                 # 执行路径
 pid=0
