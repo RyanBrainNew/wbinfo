@@ -4,17 +4,19 @@
 # Action    : 监控
 # Desc      : 监控启动模块
 
-import wbmonitor
-import push
+import util.wbmonitor
+import util.push
+import util.yamlutil
 import logging
 import time
+import os
+
 
 # 输出到日志文件
-# logfile_path = '/root/weibo/new.log'
-logfile_path = 'new.log'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 logging.basicConfig(level=logging.INFO,  # 控制台打印的日志级别
-                    filename=logfile_path,
+                    filename=os.path.join(BASE_DIR, 'new.log'),
                     filemode='a',  # 模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
                     # a是追加模式，默认如果不写的话，就是追加模式
                     format='%(asctime)s : %(message)s'
@@ -22,9 +24,12 @@ logging.basicConfig(level=logging.INFO,  # 控制台打印的日志级别
                     # 日志格式
                     )
 
-
 # 关键词过滤
-keywords = {"婴", "儿童", "尿"}
+data_all = util.yamlutil.data_all
+for yam_data in data_all:
+    if 'keywords' in yam_data:
+        keywords = yam_data['keywords']
+        break
 
 
 def keyword_compare(dicts):
@@ -37,23 +42,23 @@ def keyword_compare(dicts):
 
 def main():
     # 微博部分
-    w = wbmonitor.weiboMonitor()
-    w.getweiboInfo()
-    with open(wbmonitor.COMPARE_FILE, 'r') as f:
+    w = util.wbmonitor.WeiboMonitor()
+    w.getweiboinfo()
+    with open(w.comparefile, 'r') as f:
         text = f.read()
         if text == '':
-            w.getWBQueue()
+            w.getwb_queue()
     new_wb = w.startmonitor()
     if new_wb is not None:
         flag = keyword_compare(new_wb)
         if flag == 1:
             logging.info('准备推送')
             if 1:
-                texts = push.pushChannels.telegram_HandleMessage(new_wb)
-                push.pushChannels.telegram_Push(texts)  # 用telegram机器人推送
+                texts = util.push.PushChannels.telegram_handlemessage(new_wb)
+                util.push.PushChannels.telegram_push(texts)  # 用telegram机器人推送
             # if 1:
-            #     texts = push.pushChannels.wechat_HandleMessage(new_wb)
-            #     push.pushChannels.wechat_Push(texts)  # 用企业微信推送
+            #     texts = util.push.PushChannels.wechat_handlemessage(new_wb)
+            #     util.push.PushChannels.wechat_push(texts)  # 用企业微信推送
 
         else:
             print("没有关键词")

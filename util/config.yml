@@ -1,0 +1,26 @@
+--- 
+TelegramConfig:
+    tg_bot_token : "2023326569:AAHLs6ulU2-NnYXJRnHgx-9_I74AplihwwA"
+    tg_user_id : "-520508478"
+--- 
+WechatConfig:
+    corpid : "wwb83672685478bbbe"
+    agentid : 1000002
+    corpsecret : "Frah3vmHcAaSbGWdPYJOgmVALwgNAzWYvx7KbqI7YkM"
+# AgentId = '1000003'
+# corpsecret = 'GVO52NYeeQdgrSpd2Wikje1QNyBRoZzZyexY9k5dFqQ'
+# AgentId = '1000004'
+# corpsecret = 'svupCDwX54V1NtuekwuOg58yW5khHyCnzrTLJy8Vpos'
+--- 
+keywords:
+    - "婴"
+    - "卫生巾"
+    - "儿童"
+    - "尿"
+---
+uid:
+    - "5069029750"    # 薅羊毛大队长
+    - "2048344461"    # 请与白菜同归于尽
+    - "3977917853"    # 不薅羊毛了
+    - "1779290792"    # 默默薅羊毛
+    - "1862323381"    # 东民上车了
