@@ -68,7 +68,7 @@ class pushChannels:
 				"safe": 0
 			}
 		send_msges = (bytes(json.dumps(data), 'utf-8'))
-		res = requests.post(url, send_msges)
+		res = requests.post(url, send_msges, timeout=5)
 		respon = res.json()  # 当返回的数据是json串的时候直接用.json即可将respone转换成字典
 		if respon['errmsg'] == "ok":
 			print(f"推送成功\n")
