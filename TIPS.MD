@@ -9,6 +9,12 @@
 输出当前环境配置库信息等，打开源码，切换能运行的虚拟环境，在terminal中执行以下指令
 
 ```
-pip freeze > requirments.txt
+pip list --format=freeze > requirements.txt
+```
+
+安装时，执行以下指令
+
+```
+pip install -r requirements.txt
 ```
 
