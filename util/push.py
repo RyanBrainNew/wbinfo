@@ -63,6 +63,7 @@ class PushChannels:
         access_token = jsontxt['access_token']
         html = str(msg).replace('\n', '<br>')
         url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}"
+        # 文本消息
         data = \
             {
                 "touser": "@all",
@@ -73,6 +74,20 @@ class PushChannels:
                 },
                 "safe": 0
             }
+        # 文本卡片消息
+        # data = \
+        #     {
+        #         "touser": "@all",
+        #         "msgtype": "textcard",
+        #         "agentid": agentid,
+        #         "textcard": {
+        #             "title": "微博通知",
+        #             "description": html,
+        #             "url": "sinaweibo://splash",
+        #             # "btntxt": "更多"
+        #         },
+        #         "safe": 0
+        #     }
         send_msges = (bytes(json.dumps(data), 'utf-8'))
         res = requests.post(url, send_msges, timeout=5)
         respon = res.json()  # 当返回的数据是json串的时候直接用.json即可将respone转换成字典

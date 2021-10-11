@@ -18,6 +18,8 @@ pip list --format=freeze > requirements.txt
 
 ```
 pip install -r requirements.txt
+或
+pip3 install -r requirements.txt
 ```
 
 

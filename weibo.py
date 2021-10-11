@@ -10,6 +10,7 @@ import util.yamlutil
 import logging
 import time
 import os
+import datetime
 
 
 # 输出到日志文件
@@ -41,6 +42,12 @@ def keyword_compare(dicts):
 
 
 def main():
+    # 添加勿扰模式，固定时间段不推送
+    # nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # 现在
+    now_time = datetime.datetime.now()
+    now_hour = now_time.strftime('%H')
+    # now_minute = now_time.strftime('%M')
+    
     # 微博部分
     w = util.wbmonitor.WeiboMonitor()
     w.getweiboinfo()
@@ -50,15 +57,20 @@ def main():
             w.getwb_queue()
     new_wb = w.startmonitor()
     if new_wb is not None:
-        flag = keyword_compare(new_wb)
-        if flag == 1:
+        keyword_notexist_flag = keyword_compare(new_wb)
+        if keyword_notexist_flag == 1:
             logging.info('准备推送')
-            if 1:
-                texts = util.push.PushChannels.telegram_handlemessage(new_wb)
-                util.push.PushChannels.telegram_push(texts)  # 用telegram机器人推送
+            # 设置勿扰时段，收集到新微博id，但是不推送
+            if '01' <= now_hour <= '07':
+                logging.info('勿扰时间段不推送')
+                print('勿扰时间段不推送')
+                return
             # if 1:
-            #     texts = util.push.PushChannels.wechat_handlemessage(new_wb)
-            #     util.push.PushChannels.wechat_push(texts)  # 用企业微信推送
+            #     texts = util.push.PushChannels.telegram_handlemessage(new_wb)
+            #     util.push.PushChannels.telegram_push(texts)  # 用telegram机器人推送
+            if 1:
+                texts = util.push.PushChannels.wechat_handlemessage(new_wb)
+                util.push.PushChannels.wechat_push(texts)  # 用企业微信推送
 
         else:
             print("没有关键词")
