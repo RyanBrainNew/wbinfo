@@ -102,7 +102,7 @@ class PushChannels:
         context = dicts['text'].replace('<br />', '\r')
         pattern = re.compile(r'<[^>]+>', re.S)
         result = pattern.sub('', context)
-        text = "发送内容: " + result + "\r"
+        text =  result + "\r"
         text += "发送时间: " + dicts['created_at'][0:20]+"\r"
-        text += "宁关注的：" + dicts['nickName']+"发布微博啦\r"
+        text += "宁关注的：" + dicts['nickName']+"发布微博啦"
         return text

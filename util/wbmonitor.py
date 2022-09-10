@@ -7,6 +7,7 @@
 import requests
 import os
 import util.yamlutil
+import logging
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -38,13 +39,14 @@ class WeiboMonitor:
             self.weiboInfo = []
             for i in self.uid:
                 userinfo = 'https://m.weibo.cn/api/container/getIndex?type=uid&value=%s' % i
-                res = requests.get(userinfo, headers=self.reqHeaders)
+                res = requests.get(userinfo, headers=self.reqHeaders, timeout=(5, 10))
                 for j in res.json()['data']['tabsInfo']['tabs']:
                     if j['tab_type'] == 'weibo':
                         self.weiboInfo.append('https://m.weibo.cn/api/container/'
                                               'getIndex?type=uid&value=%s&containerid=%s' % (i, j['containerid']))
         except Exception as e:
             self.echo_msg('Error', e)
+            logging.info('getweiboinfo出错%s' % e)
             # sys.exit()        为了代码不异常退出，这里注释掉
     
     # 收集已经发布动态的id
@@ -52,7 +54,7 @@ class WeiboMonitor:
         try:
             self.itemids = []
             for i in self.weiboInfo:
-                res = requests.get(i, headers=self.reqHeaders)
+                res = requests.get(i, headers=self.reqHeaders, timeout=(5, 10))
                 
                 with open(self.comparefile, 'a') as f:
                     for j in res.json()['data']['cards']:
@@ -63,10 +65,11 @@ class WeiboMonitor:
             self.echo_msg('Info', '目前有 %s 条微博' % len(self.itemids))
         except Exception as e:
             self.echo_msg('Error', e)
+            logging.info('getwb_queue出错%s' % e)
             # sys.exit()        为了代码不异常退出，这里注释掉
     
     # 开始监控
-    def startmonitor(self, ):
+    def startmonitor(self):
         returndict = {}  # 获取微博相关内容，编辑为邮件
         try:
             itemids = []
@@ -75,7 +78,7 @@ class WeiboMonitor:
                     line = line.strip('\n')
                     itemids.append(line)
             for i in self.weiboInfo:
-                res = requests.get(i, headers=self.reqHeaders)
+                res = requests.get(i, headers=self.reqHeaders, timeout=(5, 10))
                 for j in res.json()['data']['cards']:
                     if j['card_type'] == 9:
                         if str(j['mblog']['id']) not in itemids:
@@ -90,6 +93,7 @@ class WeiboMonitor:
                             return returndict
         except Exception as e:
             self.echo_msg('Error', e)
+            logging.info('startmonitor出错%s' % e)
             # sys.exit()        为了代码不异常退出，这里注释掉
     
     # 格式化输出

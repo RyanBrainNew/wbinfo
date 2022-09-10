@@ -49,37 +49,57 @@ def main():
     # now_minute = now_time.strftime('%M')
     
     # 微博部分
-    w = util.wbmonitor.WeiboMonitor()
-    w.getweiboinfo()
-    with open(w.comparefile, 'r') as f:
-        text = f.read()
-        if text == '':
-            w.getwb_queue()
-    new_wb = w.startmonitor()
-    if new_wb is not None:
-        keyword_notexist_flag = keyword_compare(new_wb)
-        if keyword_notexist_flag == 1:
-            logging.info('准备推送')
-            # 设置勿扰时段，收集到新微博id，但是不推送
-            if '01' <= now_hour <= '07':
-                logging.info('勿扰时间段不推送')
-                print('勿扰时间段不推送')
-                return
-            # if 1:
-            #     texts = util.push.PushChannels.telegram_handlemessage(new_wb)
-            #     util.push.PushChannels.telegram_push(texts)  # 用telegram机器人推送
-            if 1:
-                texts = util.push.PushChannels.wechat_handlemessage(new_wb)
-                util.push.PushChannels.wechat_push(texts)  # 用企业微信推送
+    try:
+        logging.info('start weibo')
+        w = util.wbmonitor.WeiboMonitor()
+        logging.info('create weibo object')
+        w.getweiboinfo()
+        logging.info('getweiboinfo finish')
+        with open(w.comparefile, 'r') as f:
+            text = f.read()
+            if text == '':
+                w.getwb_queue()
+        logging.info('startmonitor start')
+        new_wb = w.startmonitor()
+        logging.info('startmonitor finish')
 
+        if new_wb is not None:
+            keyword_notexist_flag = keyword_compare(new_wb)
+            if keyword_notexist_flag == 1:
+                logging.info('准备推送')
+                print("准备推送")
+                # 设置勿扰时段，收集到新微博id，但是不推送
+                if '01' <= now_hour <= '07':
+                    logging.info('勿扰时间段不推送')
+                    print('勿扰时间段不推送')
+                    return
+                # if 1:
+                #     texts = util.push.PushChannels.telegram_handlemessage(new_wb)
+                #     util.push.PushChannels.telegram_push(texts)  # 用telegram机器人推送
+                if 1:
+                    texts = util.push.PushChannels.wechat_handlemessage(new_wb)
+                    util.push.PushChannels.wechat_push(texts)  # 用企业微信推送
+    
+            else:
+                logging.info('没有关键词')
+                print("没有关键词")
         else:
-            print("没有关键词")
-    else:
-        # print("没有更新内容")
-        logging.info('没有更新')
+            # print("没有更新内容")
+            logging.info('没有更新')
+            print("没有更新")
+    except Exception as r:
+        logging.info('程序运行出错%s' % r)
+        print('程序运行出错%s' % r)
+    finally:
+        logging.info('当前main主函数跑完')
+        print("当前main主函数跑完")
 
 
 if __name__ == '__main__':
     while 1:
+        logging.info('main开始')
         main()
-        time.sleep(30)
+        logging.info('main结束')
+        logging.info('sleep开始')
+        time.sleep(15)
+        logging.info('sleep结束')
